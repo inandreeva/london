@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI-103 Practice Quizzes — Developing AI Apps and Agents on Azure</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="site-header">
+  <h1>AI-103 Practice Quizzes</h1>
+  <p class="subtitle">Developing AI Apps and Agents on Azure — scenario-based practice</p>
+</header>
+
+<main>
+  <!-- ---------------- LIBRARY (MENU) ---------------- -->
+  <section id="library-screen">
+    <div class="library-intro">
+      <h2>Choose a quiz</h2>
+      <p id="library-summary" class="muted"></p>
+    </div>
+    <div id="quiz-grid" class="quiz-grid"></div>
+  </section>
+
+  <!-- ---------------- SETUP ---------------- -->
+  <section id="setup-screen" class="card hidden">
+    <button class="link-btn" data-goto="library">&larr; All quizzes</button>
+    <h2 id="setup-title"></h2>
+    <p id="setup-desc" class="muted"></p>
+
+    <div class="field">
+      <label for="topic-select">Topic</label>
+      <select id="topic-select"></select>
+    </div>
+
+    <div class="field">
+      <label for="count-select">Number of questions</label>
+      <select id="count-select"></select>
+    </div>
+
+    <div class="field checkbox-row">
+      <label><input type="checkbox" id="shuffle-answers" checked> Shuffle answer options</label>
+      <label><input type="checkbox" id="instant-feedback"> Show the answer immediately after each question</label>
+    </div>
+
+    <button id="start-btn" class="primary">Start quiz</button>
+  </section>
+
+  <!-- ---------------- QUIZ SCREEN ---------------- -->
+  <section id="quiz-screen" class="card hidden">
+    <div class="quiz-meta">
+      <span id="progress-label"></span>
+      <span class="meta-right">
+        <span id="kind-badge" class="badge"></span>
+        <span id="topic-label" class="pill"></span>
+      </span>
+    </div>
+    <div class="progress-track"><div id="progress-bar" class="progress-fill"></div></div>
+
+    <h2 id="question-text"></h2>
+    <details id="question-context" class="case-study hidden">
+      <summary>Case study — open to read the scenario</summary>
+      <div id="question-context-body"></div>
+    </details>
+    <p id="question-hint" class="hint hidden"></p>
+    <div id="question-body"></div>
+
+    <div id="feedback" class="feedback hidden"></div>
+
+    <div class="quiz-actions">
+      <button id="prev-btn" class="secondary">Back</button>
+      <button id="next-btn" class="primary">Next</button>
+      <button class="link-btn push-right" data-goto="library">Quit to menu</button>
+    </div>
+  </section>
+
+  <!-- ---------------- RESULT SCREEN ---------------- -->
+  <section id="result-screen" class="card hidden">
+    <h2 id="result-title">Your result</h2>
+    <div class="score-wrap">
+      <div id="score-ring" class="score-ring"><span id="score-percent">0%</span></div>
+      <div>
+        <p id="score-detail" class="score-detail"></p>
+        <p id="score-verdict" class="muted"></p>
+      </div>
+    </div>
+
+    <h3>Breakdown by topic</h3>
+    <table id="breakdown-table" class="breakdown"></table>
+
+    <h3>Review</h3>
+    <div id="review-list" class="review"></div>
+
+    <div class="quiz-actions">
+      <button id="retry-btn" class="primary">Retake this quiz</button>
+      <button id="retry-wrong-btn" class="secondary">Retry only the ones I missed</button>
+      <button class="link-btn push-right" data-goto="library">All quizzes</button>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  Independent study material. Verify against the
+  <a href="https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/ai-103" target="_blank" rel="noopener">official AI-103 study guide</a>.
+</footer>
+
+<script src="questions.js"></script>
+<script src="data/study-guide.js"></script>
+<script src="data/foundry-scenarios.js"></script>
+<script src="data/exam-bank.js"></script>
+<script src="data/python/bank.js"></script>
+<script src="data/python/part-01-auth.js"></script>
+<script src="data/python/part-02-agents.js"></script>
+<script src="data/python/part-03-tools.js"></script>
+<script src="data/python/part-04-search.js"></script>
+<script src="data/python/part-05-speech.js"></script>
+<script src="data/python/part-06-vision.js"></script>
+<script src="data/python/register.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

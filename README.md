@@ -110,14 +110,22 @@ Open-source study repository for **Exam AI-103: Developing AI Apps and Agents on
 
 | File | Description |
 |---|---|
-| `AI-103_Knowledge_Check_50.html` | 50-question knowledge check with domain filtering and immediate feedback |
-| `AI-103_Mock_Exam_60.html` | 60-question timed mock (90 min, feedback on submission only) |
-| `AI-103_Practice_Hard_250.html` | 250-question hard-mode bank with confusable near-miss distractors |
-| `AI-103_Gap_Topics_Study_Guide.docx` | Nine-section guide covering gaps in the official learning path |
-| `AI-103_Exam_Booklet.docx` | Consolidated exam reference booklet |
-| `AI103_Exam_Prep_Tracker.xlsx` | Study tracker by domain and topic |
+| [`quiz/index.html`](quiz/index.html) | Interactive quiz library — 7 quizzes / 424 questions behind a menu |
 
-All HTML tools are self-contained (no build step, no dependencies) — open directly in a browser. Question banks are weighted to mirror the official domain distribution.
+| Quiz | Questions | Format |
+|---|---|---|
+| Model Selection | 15 | single answer |
+| Model Selection — Hard Mode | 20 | single answer |
+| Infrastructure Design | 10 | single answer |
+| Image & Video Workflows | 9 | single answer |
+| Foundry Scenarios #2 | 50 | single, multi, Yes/No, fill-in |
+| Case Study & Exam Bank #3 | 20 | single, multi, fill-in, case study |
+| Python for Azure AI Agents | 300 | code completion |
+| Mixed exam | 424 | random draw from all of the above |
+
+Every run reshuffles the questions and the answer options, then reports a percentage
+score, a per-topic breakdown and a full review with explanations. The page is
+self-contained — no build step and no dependencies, just open it in a browser.
 
 ---
 
@@ -131,15 +139,9 @@ All HTML tools are self-contained (no build step, no dependencies) — open dire
 ---
 
 ## 🏗️ Reference Architectures
-
-### Azure AI Foundry
-[![Azure AI Foundry](images/foundry/foundry-architecture.png)](https://azure.microsoft.com/en-us/products/ai-foundry)
-
-### Azure AI Search Pipeline
-[![Azure AI Search](images/ai-search/azure-ai-search-pipeline.png)](https://azure.microsoft.com/en-us/products/ai-services/ai-search)
-
-### RAG
-[![RAG](images/rag/rag-overview.png)](https://learn.microsoft.com/en-us/azure/foundry/concepts/retrieval-augmented-generation)
+- [Azure AI Foundry](https://azure.microsoft.com/en-us/products/ai-foundry)
+- [Azure AI Search](https://azure.microsoft.com/en-us/products/ai-services/ai-search)
+- [Retrieval-Augmented Generation](https://learn.microsoft.com/en-us/azure/foundry/concepts/retrieval-augmented-generation)
 
 ---
 
