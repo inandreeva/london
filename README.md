@@ -108,6 +108,8 @@ Open-source study repository for **Exam AI-103: Developing AI Apps and Agents on
 
 ## 🗂️ Practice Materials in This Repo
 
+**Live:** https://inandreeva.github.io/london/
+
 | File | Description |
 |---|---|
 | [`quiz/index.html`](quiz/index.html) | Interactive quiz library — 7 quizzes / 424 questions behind a menu |
