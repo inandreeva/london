@@ -73,6 +73,7 @@
     result: document.getElementById("result-screen"),
     librarySummary: document.getElementById("library-summary"),
     quizGrid: document.getElementById("quiz-grid"),
+    resetProgressBtn: document.getElementById("reset-progress-btn"),
     setupTitle: document.getElementById("setup-title"),
     setupDesc: document.getElementById("setup-desc"),
     topicSelect: document.getElementById("topic-select"),
@@ -106,6 +107,43 @@
   var LETTERS = ["A", "B", "C", "D", "E", "F", "G"];
   var activeQuiz = null;
   var state = null;
+
+  /* ---------------- progress (localStorage) ---------------- */
+
+  var PROGRESS_KEY = "ai103-quiz-progress-v1";
+  var progress = readProgress();
+
+  function readProgress() {
+    try {
+      var raw = window.localStorage.getItem(PROGRESS_KEY);
+      var parsed = raw ? JSON.parse(raw) : null;
+      return parsed && typeof parsed === "object" ? parsed : {};
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function writeProgress() {
+    try {
+      window.localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress));
+    } catch (e) { /* storage unavailable or full — progress stays in-memory only */ }
+  }
+
+  function recordResult(quizId, percent) {
+    var entry = progress[quizId] || { attempts: 0, best: 0 };
+    entry.attempts++;
+    entry.last = percent;
+    entry.best = Math.max(entry.best || 0, percent);
+    entry.at = Date.now();
+    progress[quizId] = entry;
+    writeProgress();
+  }
+
+  function formatDate(ms) {
+    if (!ms) return "";
+    var d = new Date(ms);
+    return d.toLocaleDateString(undefined, { day: "numeric", month: "short" });
+  }
 
   /* ---------------- helpers ---------------- */
 
@@ -149,17 +187,27 @@
       .filter(function (q) { return !q.mixed; })
       .reduce(function (n, q) { return n + q.questions.length; }, 0);
     var realQuizzes = QUIZZES.filter(function (q) { return !q.mixed; }).length;
+    var doneCount = QUIZZES.filter(function (q) { return !q.mixed && progress[q.id]; }).length;
     el.librarySummary.textContent =
-      realQuizzes + " quizzes · " + totalQuestions + " questions. Every run reshuffles the draw.";
+      realQuizzes + " quizzes · " + totalQuestions + " questions · " +
+      doneCount + " of " + realQuizzes + " taken. Every run reshuffles the draw.";
+    el.resetProgressBtn.classList.toggle("hidden", Object.keys(progress).length === 0);
 
     el.quizGrid.innerHTML = "";
     QUIZZES.forEach(function (quiz) {
+      var done = progress[quiz.id];
       var card = document.createElement("button");
       card.type = "button";
-      card.className = "quiz-card" + (quiz.mixed ? " mixed" : "");
+      card.className = "quiz-card" + (quiz.mixed ? " mixed" : "") + (done ? " done" : "");
 
       var title = document.createElement("h3");
       title.textContent = quiz.title;
+      if (done) {
+        var check = document.createElement("span");
+        check.className = "done-check";
+        check.textContent = "✓";
+        title.appendChild(check);
+      }
       card.appendChild(title);
 
       if (quiz.subtitle) {
@@ -173,6 +221,15 @@
       desc.className = "quiz-card-desc";
       desc.textContent = quiz.description;
       card.appendChild(desc);
+
+      if (done) {
+        var status = document.createElement("p");
+        status.className = "quiz-card-status " + scoreClass(done.best);
+        status.textContent = "Completed · best " + done.best + "% · last " + done.last + "%" +
+          " · " + done.attempts + (done.attempts === 1 ? " attempt" : " attempts") +
+          (done.at ? " · " + formatDate(done.at) : "");
+        card.appendChild(status);
+      }
 
       var meta = document.createElement("div");
       meta.className = "quiz-card-meta";
@@ -190,6 +247,12 @@
     s.className = "tag";
     s.textContent = text;
     return s;
+  }
+
+  function scoreClass(p) {
+    if (p >= 80) return "score-ok";
+    if (p >= 60) return "score-warn";
+    return "score-bad";
   }
 
   /* ---------------- setup ---------------- */
@@ -331,7 +394,6 @@
     el.questionHint.className = "hint" + (item.ref.code ? " code" : "");
     el.questionHint.classList.toggle("hidden", !item.ref.hint);
 
-    el.nextBtn.textContent = state.index === total - 1 ? "Finish & see score" : "Next";
     el.prevBtn.disabled = state.index === 0;
 
     renderBody();
@@ -458,27 +520,19 @@
       if (at === -1) item.picked.push(i);
       else item.picked.splice(at, 1);
     }
-    maybeReveal();
     refreshState();
   }
 
   function pickStatement(row, value) {
     if (locked()) return;
     current().picked[row] = value;
-    maybeReveal();
     refreshState();
   }
 
   function pickMatch(row, value) {
     if (locked()) return;
     current().picked[row] = value;
-    maybeReveal();
     refreshState();
-  }
-
-  /* Single-answer questions reveal on click; the others wait until every part is filled in. */
-  function maybeReveal() {
-    if (state.instant && isAnswered(current())) state.revealed[state.index] = true;
   }
 
   function refreshState() {
@@ -532,6 +586,10 @@
       el.feedback.textContent = "";
     }
 
+    var last = state.index === state.items.length - 1;
+    el.nextBtn.textContent = state.instant && !state.revealed[state.index]
+      ? "Check answer"
+      : (last ? "Finish & see score" : "Next");
     el.nextBtn.disabled = !isAnswered(item);
   }
 
@@ -604,6 +662,9 @@
 
     renderBreakdown();
     renderReview();
+
+    recordResult(activeQuiz.id, percent);
+    buildLibrary();
 
     el.retryWrongBtn.classList.toggle("hidden", correct === total);
     show(el.result);
@@ -711,6 +772,13 @@
 
   document.querySelectorAll('[data-goto="library"]').forEach(function (btn) {
     btn.addEventListener("click", function () { show(el.library); });
+  });
+
+  el.resetProgressBtn.addEventListener("click", function () {
+    if (!window.confirm("Clear the completed marks for every quiz?")) return;
+    progress = {};
+    writeProgress();
+    buildLibrary();
   });
 
   document.addEventListener("keydown", function (e) {

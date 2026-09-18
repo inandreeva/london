@@ -18,6 +18,7 @@
     <div class="library-intro">
       <h2>Choose a quiz</h2>
       <p id="library-summary" class="muted"></p>
+      <button id="reset-progress-btn" class="link-btn hidden">Reset progress</button>
     </div>
     <div id="quiz-grid" class="quiz-grid"></div>
   </section>
@@ -40,7 +41,7 @@
 
     <div class="field checkbox-row">
       <label><input type="checkbox" id="shuffle-answers" checked> Shuffle answer options</label>
-      <label><input type="checkbox" id="instant-feedback"> Show the answer immediately after each question</label>
+      <label><input type="checkbox" id="instant-feedback" checked> Check each answer before moving on — the first Next reveals the correct answer, the second one continues</label>
     </div>
 
     <button id="start-btn" class="primary">Start quiz</button>
@@ -48,6 +49,7 @@
 
   <!-- ---------------- QUIZ SCREEN ---------------- -->
   <section id="quiz-screen" class="card hidden">
+    <button class="link-btn" data-goto="library">&larr; Quit to menu</button>
     <div class="quiz-meta">
       <span id="progress-label"></span>
       <span class="meta-right">
@@ -70,7 +72,6 @@
     <div class="quiz-actions">
       <button id="prev-btn" class="secondary">Back</button>
       <button id="next-btn" class="primary">Next</button>
-      <button class="link-btn push-right" data-goto="library">Quit to menu</button>
     </div>
   </section>
 

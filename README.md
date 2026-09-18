@@ -112,18 +112,18 @@ Open-source study repository for **Exam AI-103: Developing AI Apps and Agents on
 
 | File | Description |
 |---|---|
-| [`quiz/index.html`](quiz/index.html) | Interactive quiz library — 7 quizzes / 424 questions behind a menu |
+| [`quiz/index.html`](quiz/index.html) | Interactive quiz library — 7 quizzes / 465 questions behind a menu |
 
 | Quiz | Questions | Format |
 |---|---|---|
 | Model Selection | 15 | single answer |
 | Model Selection — Hard Mode | 20 | single answer |
-| Infrastructure Design | 10 | single answer |
-| Image & Video Workflows | 9 | single answer |
+| Infrastructure Design | 30 | single answer |
+| Image & Video Workflows | 30 | single answer |
 | Foundry Scenarios #2 | 50 | single, multi, Yes/No, fill-in |
 | Case Study & Exam Bank #3 | 20 | single, multi, fill-in, case study |
 | Python for Azure AI Agents | 300 | code completion |
-| Mixed exam | 424 | random draw from all of the above |
+| Mixed exam | 465 | random draw from all of the above |
 
 Every run reshuffles the questions and the answer options, then reports a percentage
 score, a per-topic breakdown and a full review with explanations. The page is

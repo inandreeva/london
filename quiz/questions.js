@@ -285,6 +285,287 @@ window.QUESTION_BANK = [
     answer: 1,
     explanation: "'Multiple departments' alone would suggest a hub, but 'strictly isolated budget, no shared quota' overrides that and points to standalone projects per department."
   },
+  {
+    id: "infra-11",
+    domain: "Domain 1 — Infrastructure Design",
+    source: "mock-tests/infra-design-quiz.md",
+    question: "An EU bank must guarantee that inference data is processed only inside the European Union, but still wants Microsoft to handle capacity routing across EU datacenters rather than pinning a single region.",
+    options: [
+      "Global Standard deployment",
+      "Data Zone Standard deployment",
+      "Standard (regional) deployment in North Europe only",
+      "Provisioned throughput in a single region"
+    ],
+    answer: 1,
+    explanation: "Data Zone deployments route within a defined geography (EU or US). Global Standard may route anywhere worldwide; a single regional deployment satisfies residency but gives up cross-region capacity pooling."
+  },
+  {
+    id: "infra-12",
+    domain: "Domain 1 — Infrastructure Design",
+    source: "mock-tests/infra-design-quiz.md",
+    question: "A team has bought provisioned throughput units (PTU) sized for normal load, but occasional traffic spikes exceed the reservation and return 429 errors. They want the overflow served without buying more PTU.",
+    options: [
+      "Increase the PTU reservation to cover peak load",
+      "Enable spillover so traffic above the provisioned capacity is served by a standard (pay-per-token) deployment",
+      "Switch the whole workload to serverless",
+      "Add a second Foundry hub"
+    ],
+    answer: 1,
+    explanation: "Spillover routes overflow from a provisioned deployment to a standard deployment, so you size PTU for the baseline and pay per token only for the bursts."
+  },
+  {
+    id: "infra-13",
+    domain: "Domain 1 — Infrastructure Design",
+    source: "mock-tests/infra-design-quiz.md",
+    question: "A compliance team requires that agent threads, message history and uploaded files are stored in resources the company owns and can audit, rather than in Microsoft-managed multitenant storage.",
+    options: [
+      "Basic agent setup — platform-managed storage is always customer-auditable",
+      "Standard agent setup — bring your own Azure Cosmos DB, Azure Storage account and Azure AI Search",
+      "Disable the agent service and call the model API directly",
+      "Enable customer-managed keys on the basic setup, which moves data into your subscription"
+    ],
+    answer: 1,
+    explanation: "The standard agent setup uses BYO Cosmos DB (threads), Storage (files) and AI Search (vector store) in your own subscription. Basic setup keeps that state in Microsoft-managed resources."
+  },
+  {
+    id: "infra-14",
+    domain: "Domain 1 — Infrastructure Design",
+    source: "mock-tests/infra-design-quiz.md",
+    question: "An agent must reach an internal API that is only resolvable inside the corporate VNet, and its outbound traffic must originate from that VNet.",
+    options: [
+      "Add a private endpoint to the Foundry resource — that is enough for outbound calls",
+      "Use network-injected agents with a delegated subnet so agent egress runs inside your VNet",
+      "Expose the internal API publicly and restrict it by API key",
+      "Peer the VNet to the Microsoft-managed network from the portal"
+    ],
+    answer: 1,
+    explanation: "A private endpoint only secures inbound access to the Foundry resource. Outbound agent traffic entering your VNet requires network injection into a delegated subnet."
+  },
+  {
+    id: "infra-15",
+    domain: "Domain 1 — Infrastructure Design",
+    source: "mock-tests/infra-design-quiz.md",
+    question: "Developers need to create agents, manage connections and run evaluations in a Foundry project, but must not be able to change the project's own RBAC assignments or delete the resource.",
+    options: [
+      "Owner on the resource group",
+      "Azure AI Developer on the project",
+      "Contributor on the subscription",
+      "Cognitive Services OpenAI User on the resource"
+    ],
+    answer: 1,
+    explanation: "Azure AI Developer grants full authoring inside a project without resource-management or role-assignment rights. Cognitive Services OpenAI User only allows calling deployed models."
+  },
+  {
+    id: "infra-16",
+    domain: "Domain 1 — Infrastructure Design",
+    source: "mock-tests/infra-design-quiz.md",
+    question: "A policy requires that all data at rest be encrypted with keys the customer controls and can revoke. What must be configured before the Foundry resource is created?",
+    options: [
+      "A storage account with infrastructure encryption enabled",
+      "An Azure Key Vault with soft delete and purge protection enabled, holding the customer-managed key",
+      "A Key Vault with public network access disabled and no purge protection",
+      "Nothing — customer-managed keys can be enabled at any time on any resource"
+    ],
+    answer: 1,
+    explanation: "CMK requires a Key Vault with soft delete AND purge protection enabled; without purge protection Azure rejects the CMK configuration because key loss would make the data unrecoverable."
+  },
+  {
+    id: "infra-17",
+    domain: "Domain 1 — Infrastructure Design",
+    source: "mock-tests/infra-design-quiz.md",
+    question: "After adding a private endpoint to a Foundry resource, on-premises clients connected over ExpressRoute still resolve the endpoint to a public IP address.",
+    options: [
+      "The private endpoint failed to provision — recreate it",
+      "DNS is missing: the privatelink private DNS zone must be linked to the VNet and reachable from on-premises (for example via a DNS forwarder)",
+      "Private endpoints do not work over ExpressRoute",
+      "Public network access must be re-enabled for private endpoints to resolve"
+    ],
+    answer: 1,
+    explanation: "Private endpoints only change resolution if the privatelink DNS zone is linked and on-premises resolvers forward to Azure DNS. Otherwise the public CNAME wins."
+  },
+  {
+    id: "infra-18",
+    domain: "Domain 1 — Infrastructure Design",
+    source: "mock-tests/infra-design-quiz.md",
+    question: "A workload has hit the maximum tokens-per-minute quota for a model in West Europe and the business will not accept throttling. No additional quota is available in that region.",
+    options: [
+      "Create a second Foundry resource in West Europe — quota is per resource",
+      "Deploy the same model in another region and distribute traffic across both deployments, since quota is per subscription per region per model",
+      "Upgrade the subscription to a higher support plan",
+      "Switch from managed identity to API keys to bypass the rate limit"
+    ],
+    answer: 1,
+    explanation: "Model quota is scoped to subscription + region + model family, so extra resources in the same region do not help. Adding a second region (or requesting an increase) does."
+  },
+  {
+    id: "infra-19",
+    domain: "Domain 1 — Infrastructure Design",
+    source: "mock-tests/infra-design-quiz.md",
+    question: "A production chat application must stay available if an entire Azure region becomes unavailable, and the client code should not change when failover happens.",
+    options: [
+      "A single Global Standard deployment, which is inherently region-redundant for availability",
+      "Two deployments in different regions behind a gateway such as Azure API Management with load balancing and retry on 429/5xx",
+      "A geo-redundant storage account attached to the Foundry resource",
+      "Provisioned throughput, which includes automatic cross-region failover"
+    ],
+    answer: 1,
+    explanation: "Global Standard affects capacity routing, not your resource's regional availability. Cross-region resilience with a stable client endpoint requires a gateway fronting multiple regional deployments."
+  },
+  {
+    id: "infra-20",
+    domain: "Domain 1 — Infrastructure Design",
+    source: "mock-tests/infra-design-quiz.md",
+    question: "A nightly job must classify 4 million archived documents. Results are only needed by the next morning, and cost is the dominant concern.",
+    options: [
+      "Standard deployment with high concurrency",
+      "Batch deployment, which processes a submitted job asynchronously within a 24-hour target at a reduced per-token price",
+      "Provisioned throughput sized for the peak",
+      "Fine-tune a model to make each request cheaper"
+    ],
+    answer: 1,
+    explanation: "Large, latency-tolerant offline workloads are the batch deployment scenario — roughly half the token cost in exchange for asynchronous completion."
+  },
+  {
+    id: "infra-21",
+    domain: "Domain 1 — Infrastructure Design",
+    source: "mock-tests/infra-design-quiz.md",
+    question: "One deployment serves an internal red-team tool that needs relaxed content filtering, while every other deployment in the same resource must keep the default filters.",
+    options: [
+      "Content filters are set per resource, so a second Foundry resource is required",
+      "Create a custom content filter configuration and assign it to that single model deployment",
+      "Disable content filtering at the subscription level",
+      "Content filtering can only be changed in code via request parameters"
+    ],
+    answer: 1,
+    explanation: "Content filter configurations are created once and then assigned per model deployment, so different deployments in the same resource can carry different policies."
+  },
+  {
+    id: "infra-22",
+    domain: "Domain 1 — Infrastructure Design",
+    source: "mock-tests/infra-design-quiz.md",
+    question: "An operations team needs end-to-end traces of agent runs — tool calls, latency per step and token usage — queryable months later alongside the rest of the application telemetry.",
+    options: [
+      "Read the run steps from the Foundry portal when an incident is reported",
+      "Connect an Application Insights resource to the project and enable tracing, then query the data in Log Analytics",
+      "Enable activity log alerts on the Foundry resource",
+      "Store the chat transcripts in the agent's Cosmos DB thread store"
+    ],
+    answer: 1,
+    explanation: "Agent observability is delivered by connecting Application Insights to the project; the activity log only records control-plane operations, not run-level traces."
+  },
+  {
+    id: "infra-23",
+    domain: "Domain 1 — Infrastructure Design",
+    source: "mock-tests/infra-design-quiz.md",
+    question: "A security baseline states that no application may authenticate to the Foundry resource with a shared key, and the control must be enforced by the platform rather than by code review.",
+    options: [
+      "Rotate the API keys every 30 days with an automation runbook",
+      "Disable local authentication on the resource so only Microsoft Entra ID tokens are accepted, and assign RBAC roles to managed identities",
+      "Store the API keys in Key Vault and reference them from App Configuration",
+      "Restrict the resource to a private endpoint, which disables key auth"
+    ],
+    answer: 1,
+    explanation: "Disabling local auth is the platform-enforced control; Key Vault storage and rotation still leave key-based authentication possible, and private endpoints do not change the auth model."
+  },
+  {
+    id: "infra-24",
+    domain: "Domain 1 — Infrastructure Design",
+    source: "mock-tests/infra-design-quiz.md",
+    question: "A Foundry resource was deleted by mistake. Recreating it in the same region with the same name fails with a name-conflict error.",
+    options: [
+      "The name is permanently reserved — choose a different one",
+      "The resource is in the soft-delete retention window; either restore it or purge it before reusing the name",
+      "The region is out of capacity for new resources",
+      "A support ticket is the only way to release the name"
+    ],
+    answer: 1,
+    explanation: "Azure AI / Cognitive Services resources are soft-deleted for a retention period. Until you restore or purge them, the name stays taken."
+  },
+  {
+    id: "infra-25",
+    domain: "Domain 1 — Infrastructure Design",
+    source: "mock-tests/infra-design-quiz.md",
+    question: "Within a hub, one project must use a private Azure AI Search index that no other project may see, while all projects continue to use the shared Bing grounding connection.",
+    options: [
+      "Impossible — everything in a hub is shared by definition",
+      "Define the Search connection at the project scope and leave the Bing connection at the hub scope",
+      "Move the project out of the hub into a standalone project",
+      "Define both connections at the hub scope and control access with RBAC on the Search service only"
+    ],
+    answer: 1,
+    explanation: "Connections can be created at either hub scope (inherited by all projects) or project scope (visible only to that project), so the two requirements coexist in one hub."
+  },
+  {
+    id: "infra-26",
+    domain: "Domain 1 — Infrastructure Design",
+    source: "mock-tests/infra-design-quiz.md",
+    question: "Three App Service apps and two Container Apps must all call the same Foundry deployment, and the security team wants one identity to audit and one set of role assignments to maintain.",
+    options: [
+      "A system-assigned managed identity on each app",
+      "One user-assigned managed identity shared by all five workloads, granted the required role once",
+      "A single service principal with a client secret stored in Key Vault",
+      "A shared API key distributed through App Configuration"
+    ],
+    answer: 1,
+    explanation: "System-assigned identities are per resource and would need five role assignments. A user-assigned managed identity is shared across workloads with a single assignment and no secret."
+  },
+  {
+    id: "infra-27",
+    domain: "Domain 1 — Infrastructure Design",
+    source: "mock-tests/infra-design-quiz.md",
+    question: "A deployment is configured with a fixed tokens-per-minute (TPM) allocation. The team reports that short prompts are being throttled long before the token budget is exhausted.",
+    options: [
+      "TPM only limits output tokens, so input tokens must be reduced",
+      "The requests-per-minute limit is derived from the TPM allocation, so very small requests hit the RPM ceiling first",
+      "Throttling is unrelated to quota and indicates a networking failure",
+      "TPM is enforced per day, not per minute"
+    ],
+    answer: 1,
+    explanation: "Azure derives an RPM limit from the assigned TPM. Workloads with many tiny requests exhaust RPM while TPM still has headroom — the fix is raising TPM or batching requests."
+  },
+  {
+    id: "infra-28",
+    domain: "Domain 1 — Infrastructure Design",
+    source: "mock-tests/infra-design-quiz.md",
+    question: "An architect must document every dependent Azure resource that a hub-based Foundry workspace provisions or requires.",
+    options: [
+      "Only a storage account",
+      "Storage account, Key Vault, and optionally Application Insights and a container registry",
+      "Cosmos DB, Event Hubs and Service Bus",
+      "No dependencies — a hub is fully self-contained"
+    ],
+    answer: 1,
+    explanation: "A hub always needs a storage account and Key Vault; Application Insights (telemetry) and Container Registry (custom environments/images) are optional additions."
+  },
+  {
+    id: "infra-29",
+    domain: "Domain 1 — Infrastructure Design",
+    source: "mock-tests/infra-design-quiz.md",
+    question: "A managed-VNet workspace must prevent an untrusted prompt from causing the environment to upload data to an arbitrary external endpoint, while still allowing calls to two approved SaaS APIs.",
+    options: [
+      "Allow internet outbound and monitor egress with diagnostic logs",
+      "Use the allow-only-approved-outbound isolation mode and add explicit FQDN outbound rules for the two APIs",
+      "Disable public network access on the workspace, which also blocks outbound traffic",
+      "Route all traffic through a public NAT gateway"
+    ],
+    answer: 1,
+    explanation: "Allow-only-approved-outbound is the data-exfiltration-protection mode: everything is blocked unless an explicit FQDN, private endpoint or service-tag rule permits it. Inbound controls do not restrict egress."
+  },
+  {
+    id: "infra-30",
+    domain: "Domain 1 — Infrastructure Design",
+    source: "mock-tests/infra-design-quiz.md",
+    trap: true,
+    question: "EXAM TRAP: A scenario asks for 'the highest available throughput and the best global capacity utilisation' and, two paragraphs later, states that 'customer data must not leave Germany.'",
+    options: [
+      "Global Standard deployment, because throughput is the primary requirement",
+      "A regional (or EU data zone) deployment in Germany, because the residency constraint overrides the throughput preference",
+      "Global Batch deployment, which keeps data in the submitting region",
+      "Provisioned throughput with global routing enabled"
+    ],
+    answer: 1,
+    explanation: "Residency is a hard constraint; throughput is a preference. Global Standard may process the request in any region, so it fails the requirement no matter how attractive the capacity story is."
+  },
 
   /* ---------- mock-tests/model-selection-quiz-hardmode.md ---------- */
   {
@@ -698,6 +979,147 @@ window.QUESTION_BANK = [
     answer: 1,
     explanation: "The requested change affects the overall image, so it is not a mask-based inpainting problem."
   },
+  {
+    id: "vision-edit-5",
+    domain: "Domain 3 — Image Editing",
+    source: "topics/domain-3-computer-vision/image-editing-inpainting.md",
+    question: "A team has been generating marketing art with DALL·E 3 and now needs to erase a logo from an existing rendering by supplying a mask. The edits call keeps failing.",
+    options: [
+      "The mask must be a JPEG",
+      "DALL·E 3 only exposes image generation — mask-based editing requires an image model that supports the edits endpoint, such as GPT-image-1",
+      "Editing requires a provisioned deployment",
+      "Masks are only supported for square images"
+    ],
+    answer: 1,
+    explanation: "Not every image model supports every operation. DALL·E 3 is generation-only; inpainting/outpainting needs a model with an edits endpoint."
+  },
+  {
+    id: "vision-edit-6",
+    domain: "Domain 3 — Image Editing",
+    source: "topics/domain-3-computer-vision/image-editing-inpainting.md",
+    question: "An inpainting request returns an error about the mask. What does a valid mask look like?",
+    options: [
+      "A black-and-white JPEG of any size, where white marks the region to keep",
+      "A PNG with an alpha channel and the same dimensions as the source image, where the transparent pixels mark the region to be regenerated",
+      "A bounding box expressed as x, y, width and height in the request body",
+      "A text description of the region to change"
+    ],
+    answer: 1,
+    explanation: "The mask is an image file, not coordinates: same size as the source, PNG with alpha, and the cleared (transparent) area is what the model repaints."
+  },
+  {
+    id: "vision-edit-7",
+    domain: "Domain 3 — Image Editing",
+    source: "topics/domain-3-computer-vision/image-editing-inpainting.md",
+    question: "A square 1024×1024 product shot must be reused as a wide website banner without cropping the product or stretching it.",
+    options: [
+      "Inpaint the product into a larger canvas",
+      "Outpaint the image to the wider aspect ratio so the model invents plausible scene content on the left and right",
+      "Regenerate the product from text at the banner size",
+      "Upscale the image and crop the middle"
+    ],
+    answer: 1,
+    explanation: "Changing aspect ratio while keeping the original subject intact is outpainting — the model extends the scene past the original boundaries."
+  },
+  {
+    id: "vision-edit-8",
+    domain: "Domain 3 — Image Editing",
+    source: "topics/domain-3-computer-vision/image-editing-inpainting.md",
+    question: "A brand team supplies a packshot, a fabric swatch and a logo file, and wants a single composed lifestyle image that reuses all three visual assets.",
+    options: [
+      "Three separate text-to-image calls that are combined in Photoshop",
+      "One edits request to an image model that accepts multiple reference images, with a prompt describing how to combine them",
+      "Outpainting each asset until they overlap",
+      "Image-to-video, then export a frame"
+    ],
+    answer: 1,
+    explanation: "Models such as GPT-image-1 accept several input images in one editing request, which is the intended path for composing multiple brand assets."
+  },
+  {
+    id: "vision-edit-9",
+    domain: "Domain 3 — Image Editing",
+    source: "topics/domain-3-computer-vision/image-editing-inpainting.md",
+    question: "An e-commerce pipeline needs generated product images with no background, ready to drop onto any page colour.",
+    options: [
+      "Request a white background and key it out afterwards",
+      "Set the background parameter to transparent and request an output format that supports alpha, such as PNG or WebP",
+      "Use outpainting to remove the background",
+      "Transparency is only available through Azure AI Vision"
+    ],
+    answer: 1,
+    explanation: "Transparent output requires both the transparent background option and a container format with an alpha channel — JPEG cannot carry transparency."
+  },
+  {
+    id: "vision-edit-10",
+    domain: "Domain 3 — Image Editing",
+    source: "topics/domain-3-computer-vision/image-editing-inpainting.md",
+    question: "A legal review requires that the unmasked area of an edited photograph be bit-for-bit identical to the original file.",
+    options: [
+      "Use a smaller mask — unmasked pixels are always returned unchanged",
+      "The edits endpoint returns a newly rendered image, so composite the masked region from the result back over the untouched original",
+      "Set the quality parameter to high, which preserves the source pixels",
+      "Use outpainting instead, which never alters existing pixels"
+    ],
+    answer: 1,
+    explanation: "Inpainting preserves the unmasked region visually, not byte-exactly. A pixel-identical guarantee requires compositing the edited region onto the original yourself."
+  },
+  {
+    id: "vision-edit-11",
+    domain: "Domain 3 — Image Editing",
+    source: "topics/domain-3-computer-vision/image-editing-inpainting.md",
+    question: "A support tool must read a photo a customer uploaded and answer questions about what is damaged in it. No new imagery is produced.",
+    options: [
+      "Inpainting with a mask",
+      "A multimodal model performing image understanding, or Azure AI Vision image analysis",
+      "Reference-image generation",
+      "Image-to-video"
+    ],
+    answer: 1,
+    explanation: "Reading an image is an analysis task, not an editing or generation task — the exam mixes these deliberately."
+  },
+  {
+    id: "vision-edit-12",
+    domain: "Domain 3 — Image Editing",
+    source: "topics/domain-3-computer-vision/image-editing-inpainting.md",
+    question: "An image generation request is rejected with a content policy violation before any image is produced.",
+    options: [
+      "Retry the identical request until it succeeds",
+      "The prompt was blocked by the content filter — rewrite the prompt, or request an approved content filter modification for the deployment",
+      "Increase the deployment quota",
+      "Switch from a private endpoint to a public endpoint"
+    ],
+    answer: 1,
+    explanation: "Image models filter both the prompt and the generated image. A blocked prompt is a policy outcome, not a capacity or networking problem."
+  },
+  {
+    id: "vision-edit-13",
+    domain: "Domain 3 — Image Editing",
+    source: "topics/domain-3-computer-vision/image-editing-inpainting.md",
+    question: "A newsroom must be able to prove downstream that a published picture was produced by a generative model.",
+    options: [
+      "Add a visible watermark manually before publishing",
+      "Rely on the C2PA content credentials that Azure OpenAI embeds in the metadata of generated images",
+      "Store the prompt in a database",
+      "Nothing is available — provenance must be tracked out of band"
+    ],
+    answer: 1,
+    explanation: "Azure OpenAI image models attach C2PA provenance metadata to generated images, which is the platform-provided answer to 'prove this was AI generated'."
+  },
+  {
+    id: "vision-edit-14",
+    domain: "Domain 3 — Image Editing",
+    source: "topics/domain-3-computer-vision/image-editing-inpainting.md",
+    trap: true,
+    question: "EXAM TRAP: A scenario says 'the customer wants the photograph enhanced — brighter, sharper and with the sensor dust removed' and adds 'the processing must be deterministic and repeatable for an audit.'",
+    options: [
+      "Mask-based inpainting, because dust removal is a localized edit",
+      "Conventional deterministic image processing, because a generative model produces a different result on every run and cannot satisfy a repeatability requirement",
+      "Reference-image generation with the original as the reference",
+      "Outpainting with a high quality setting"
+    ],
+    answer: 1,
+    explanation: "'Deterministic and repeatable' rules out generative editing entirely. Not every image task on the exam is a generative-AI task."
+  },
 
   /* ---------- topics/domain-3-computer-vision/image-video-generation.md ---------- */
   {
@@ -769,5 +1191,160 @@ window.QUESTION_BANK = [
     ],
     answer: 1,
     explanation: "Localized edit on an existing image with the region identified by a mask."
+  },
+  {
+    id: "vision-gen-6",
+    domain: "Domain 3 — Image & Video Generation",
+    source: "topics/domain-3-computer-vision/image-video-generation.md",
+    question: "A batch job asks DALL·E 3 for four variations of a concept in a single call by setting n to 4, and the call fails.",
+    options: [
+      "The quota is too low for four images",
+      "DALL·E 3 generates one image per request — issue four separate calls (or use a model that supports n greater than 1)",
+      "Variations require the edits endpoint",
+      "n is only valid together with a reference image"
+    ],
+    answer: 1,
+    explanation: "DALL·E 3 is limited to n=1. Knowing the per-model parameter limits is a recurring exam detail."
+  },
+  {
+    id: "vision-gen-7",
+    domain: "Domain 3 — Image & Video Generation",
+    source: "topics/domain-3-computer-vision/image-video-generation.md",
+    question: "Generated images are returned as URLs and archived by a nightly job. The next morning many downloads return 404.",
+    options: [
+      "The images were removed by the content filter after generation",
+      "Generated image URLs are short-lived (about 24 hours) — request base64 output, or download and persist the image immediately",
+      "The deployment must be recreated",
+      "URLs only work from the same IP address that made the request"
+    ],
+    answer: 1,
+    explanation: "Azure does not host generated images permanently. If you need to keep them, take the b64_json response or copy the file to your own storage right away."
+  },
+  {
+    id: "vision-gen-8",
+    domain: "Domain 3 — Image & Video Generation",
+    source: "topics/domain-3-computer-vision/image-video-generation.md",
+    question: "A team notices that the image returned by DALL·E 3 reflects a longer, more detailed prompt than the one they sent, and they need to log exactly what was rendered.",
+    options: [
+      "Disable prompt rewriting in the deployment settings",
+      "Read the revised_prompt value returned in the response, which contains the rewritten prompt the model actually used",
+      "Re-send the prompt with temperature set to 0",
+      "Prompt rewriting only happens when the content filter triggers"
+    ],
+    answer: 1,
+    explanation: "DALL·E 3 automatically expands prompts for safety and quality and surfaces the result as revised_prompt — that is the value to log for reproducibility."
+  },
+  {
+    id: "vision-gen-9",
+    domain: "Domain 3 — Image & Video Generation",
+    source: "topics/domain-3-computer-vision/image-video-generation.md",
+    question: "An architecture firm wants photorealistic, understated renderings rather than the hyper-dramatic look the model produces by default.",
+    options: [
+      "Lower the quality parameter",
+      "Set the style parameter to natural instead of vivid",
+      "Use a smaller image size",
+      "Switch to image-to-video"
+    ],
+    answer: 1,
+    explanation: "DALL·E 3 exposes style with two values: vivid (hyper-real, dramatic) and natural (more subdued, realistic)."
+  },
+  {
+    id: "vision-gen-10",
+    domain: "Domain 3 — Image & Video Generation",
+    source: "topics/domain-3-computer-vision/image-video-generation.md",
+    question: "A campaign needs posters where a slogan is rendered legibly inside the artwork itself.",
+    options: [
+      "Any image model will render text reliably if the prompt quotes it",
+      "Choose an image model known for accurate in-image text rendering, such as GPT-image-1, rather than assuming every generator handles typography equally",
+      "Generate the art, then outpaint the slogan",
+      "Use OCR to add the text"
+    ],
+    answer: 1,
+    explanation: "In-image text quality differs sharply between image models; picking the model for the capability is the decision the exam is testing."
+  },
+  {
+    id: "vision-gen-11",
+    domain: "Domain 3 — Image & Video Generation",
+    source: "topics/domain-3-computer-vision/image-video-generation.md",
+    question: "A developer calls the video generation API and the HTTP response contains no video, only an identifier and a status.",
+    options: [
+      "The request failed silently — retry it",
+      "Video generation is asynchronous: create a job, poll it until it succeeds, then retrieve the generated content by id",
+      "Videos are only returned over a WebSocket connection",
+      "The deployment is missing a storage connection"
+    ],
+    answer: 1,
+    explanation: "Unlike image generation, video generation uses a job-based create/poll/retrieve pattern because rendering takes far longer than a synchronous request allows."
+  },
+  {
+    id: "vision-gen-12",
+    domain: "Domain 3 — Image & Video Generation",
+    source: "topics/domain-3-computer-vision/image-video-generation.md",
+    question: "A studio wants a two-minute generated promotional film, but the video model enforces a maximum clip length of a few seconds.",
+    options: [
+      "Request a higher duration limit through quota management",
+      "Generate a sequence of shorter clips and assemble them, keeping continuity through consistent prompts and reference frames",
+      "Generate at a lower resolution, which lifts the duration limit",
+      "Use image-to-video, which has no duration limit"
+    ],
+    answer: 1,
+    explanation: "Clip duration and resolution are hard model limits. Long-form output is produced by stitching multiple generations, not by raising a quota."
+  },
+  {
+    id: "vision-gen-13",
+    domain: "Domain 3 — Image & Video Generation",
+    source: "topics/domain-3-computer-vision/image-video-generation.md",
+    question: "A media archive needs to find every clip in 40,000 existing videos where a forklift appears near a pedestrian.",
+    options: [
+      "Text-to-video generation",
+      "Video analysis and search — Azure AI Video Indexer or a video retrieval index — because the content already exists",
+      "Image-to-video on each keyframe",
+      "Outpainting each frame"
+    ],
+    answer: 1,
+    explanation: "Searching existing footage is an analysis/retrieval problem. Generative video models create new content and cannot index an archive."
+  },
+  {
+    id: "vision-gen-14",
+    domain: "Domain 3 — Image & Video Generation",
+    source: "topics/domain-3-computer-vision/image-video-generation.md",
+    question: "A catalogue search must let shoppers upload a photo of a chair and find visually similar chairs, with no labels or captions involved.",
+    options: [
+      "Reference-image generation",
+      "Azure AI Vision multimodal embeddings — vectorize the images and the query image, then search the vector index",
+      "OCR followed by keyword search",
+      "Text-to-image with the photo as the prompt"
+    ],
+    answer: 1,
+    explanation: "Visual similarity search is an embeddings + vector index problem; generation models are not retrieval systems."
+  },
+  {
+    id: "vision-gen-15",
+    domain: "Domain 3 — Image & Video Generation",
+    source: "topics/domain-3-computer-vision/image-video-generation.md",
+    question: "An image generation deployment is throttling at a steady rate although the token usage dashboard shows almost nothing.",
+    options: [
+      "Token quota is misreported — open a support case",
+      "Image model capacity is allocated in requests per minute rather than tokens per minute, so the request rate is the limit being hit",
+      "Image generation consumes no quota at all",
+      "The content filter is rate limiting the deployment"
+    ],
+    answer: 1,
+    explanation: "Image deployments are governed by request-rate capacity, so token dashboards look idle while the deployment throttles."
+  },
+  {
+    id: "vision-gen-16",
+    domain: "Domain 3 — Image & Video Generation",
+    source: "topics/domain-3-computer-vision/image-video-generation.md",
+    trap: true,
+    question: "EXAM TRAP: A scenario asks for 'a video of our CEO delivering the quarterly message, generated from her headshot and a script'.",
+    options: [
+      "Image-to-video, because a source image plus a prompt is supplied",
+      "Not permitted as described — generating a realistic likeness of an identifiable real person is restricted by the content policy, so the requirement must change",
+      "Text-to-video, because the script is the prompt",
+      "Reference-image generation followed by image-to-video"
+    ],
+    answer: 1,
+    explanation: "The workflow keywords fit image-to-video perfectly, which is exactly the bait. Responsible-AI restrictions on synthesising real, identifiable people override the workflow match."
   }
 ];

@@ -86,6 +86,7 @@ button.link-btn:hover { color: var(--accent); }
 .library-intro { margin-bottom: 18px; }
 .library-intro h2 { margin: 0 0 4px; font-size: 21px; }
 .library-intro p { margin: 0; font-size: 14px; }
+.library-intro .link-btn { margin-top: 2px; }
 
 .quiz-grid {
   display: grid;
@@ -106,6 +107,23 @@ button.link-btn:hover { color: var(--accent); }
 }
 .quiz-card:hover { border-color: var(--accent); transform: translateY(-2px); }
 .quiz-card.mixed { border-style: dashed; }
+.quiz-card.done { border-color: rgba(63, 185, 80, 0.45); }
+.quiz-card.done h3 { display: flex; align-items: center; gap: 8px; }
+.done-check {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  color: var(--bg);
+  background: var(--ok);
+}
+.quiz-card-status { margin: 0; font-size: 12.5px; font-weight: 600; }
+.quiz-card-status.score-ok { color: var(--ok); }
+.quiz-card-status.score-warn { color: var(--warn); }
+.quiz-card-status.score-bad { color: var(--bad); }
 .quiz-card h3 { margin: 0; font-size: 17px; }
 .quiz-card-sub { margin: 0; font-size: 12.5px; color: var(--accent); }
 .quiz-card-desc { margin: 0; font-size: 13.5px; color: var(--muted); line-height: 1.5; }
